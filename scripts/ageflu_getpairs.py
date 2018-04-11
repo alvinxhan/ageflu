@@ -98,7 +98,7 @@ if __name__ == '__main__':
     from os.path import expanduser
     import re, sys, itertools
     ref_subtype_dictionary = {'H1N1PDM09':'H1', 'H3N2':'H3', 'BVIC':'B73', 'BYAM':'B73'}
-    HA_ref_numbering_fdat = parsefasta('H1_H3_H5_H7_H9_FluB_NumberingRef.fa', check_dna=0, check_codon=0)
+    HA_ref_numbering_fdat = parsefasta('H1pdm09_H3_FluB_NumberingRef.fa', check_dna=0, check_codon=0)
     queryST_to_refST_to_AbNum_to_RefNum = {'H1N1PDM09': {'H1':{}, 'H3':{}, 'B73':{}}, 'H3N2': {'H1':{}, 'H3':{}, 'B73':{}}, 'BVIC': {'H1':{}, 'H3':{}, 'B73':{}}, 'BYAM': {'H1':{}, 'H3':{}, 'B73':{}}}
     queryST_to_RefStrain = {'H1N1PDM09':'A/Texas/04/2009(H1N1)_H1pdm09absolutenumbering', 'H3N2':'A/Aichi/2/1968(H3N2)_H3absolutenumbering', 'BVIC':'B/Brisbane/60/2008_BVicAbs', 'BYAM':'B/Phuket/3073/2013_BYamAbs'}
     RefStrain_to_RefSeq = {'H1':HA_ref_numbering_fdat['A/Texas/04/2009(H1N1)_H1pdm09absolutenumbering'], 'H3':HA_ref_numbering_fdat['A/Aichi/2/68(H3N2)_H3numbering'], 'B73':HA_ref_numbering_fdat['B/HK/8/73_BYamNumbering']}
