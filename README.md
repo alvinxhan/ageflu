@@ -2,4 +2,4 @@
 
 Citation
 
-Xiaochuan Alvin Han, Sebastian Maurer-Stroh, Colin A. Russell. Individual immune selection pressure has limited impact on seasonal influenza virus evolution.
+Alvin Xiaochuan Han, Sebastian Maurer-Stroh, Colin A. Russell. Individual immune selection pressure has limited impact on seasonal influenza virus evolution.
