@@ -288,7 +288,8 @@ if __name__ == '__main__':
     # distribution analyses
     print ('...pair distribution analyses...')
     maxmut = int(re.search('_MM(\d+)_', params.input_file).group(1))
-    outfname = '{}_SP{}.txt'.format(params.input_file.replace('ageflu_evol-closest-pairs.', '').replace('.txt', ''), '1' if params.same_passage else '0')
+    outfname = '{}_SP{}.txt'.format(re.sub('/*[^/]+/', '', params.input_file.replace('ageflu_evol-closest-pairs.', '').replace('.txt', '')), '1' if params.same_passage else '0')
+
     with open('ageflu_pairs-distribution.{}'.format(outfname), 'w') as output:
         # pair distribution - frequencies
         output.write('Frequency distribution of pair types stratified by number of amino acid substitutions\nPT/Sub_#\tCA\tAC\tCC\tAA\tNC\tSub#_TOT\n')
