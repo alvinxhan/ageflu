@@ -135,7 +135,7 @@ if __name__ == '__main__':
     params.add_argument('-o', '--order', type=int, default=3, help='Analyze up to the n-th ordinal set of pairs (default: %(default)s).')
     params = params.parse_args()
 
-    # query subtype
+    # query subtype analysed
     try:
         query_subtype = re.search('(H3N2|pH1N1|H1N1pdm09|BVic|BYam)', params.tree).group().upper()
         if query_subtype == 'PH1N1':
@@ -143,18 +143,26 @@ if __name__ == '__main__':
     except:
         query_subtype = raw_input('\nWARNING: Can\'t parsed query subtype from tree name. Enter subtype (H3N2/pH1N1/BVic/BYam): ')
 
+    # output filename
     outfname = '{}C{}_{}A{}_PD{}_MM{}_CL{}_{}'.format(params.child[0], params.child[-1], params.adult[0], params.adult[-1], params.patdist, params.maxmut, params.order, re.sub('[^/]*/', '', params.tree))
 
-    # parse fasta
+    # parse fasta alignment
     print ('\n...parsing fasta aln...')
     fdat_nuc = parsefasta(params.aln)
     fdat_aa = {k:translatedDNA(v) for k,v in fdat_nuc.items()}
     isolateid_to_fdatheader = {re.search('(GBISL|EPIISL|GB_ISL_|EPI_ISL_)\d+', header).group().replace('_', ''):header for header in fdat_nuc.keys()}
     fdatheader_to_isolateid = {v:k for k,v in isolateid_to_fdatheader.items()}
     isolateid_to_age = {isolateid:int(re.search('AGE(\d+)', header).group(1)) for isolateid, header in isolateid_to_fdatheader.items()}
+
+    with open('dates.txt', 'w') as output:
+        for isolateid, header in isolateid_to_fdatheader.items():
+            date = re.search('_(\d+\.\d+)_', header).group(1)
+            output.write('{},{}\n'.format(isolateid, date))
+    exit(1)
+    # sequences to ignore (outside of child_min and adult_max age)
     isolates_to_ignore = [isolateid for isolateid, age in isolateid_to_age.items() if age < params.child[0] or age > params.adult[-1]]
 
-    # parse clstr file
+    # parse clstr file and sort each identical sequence cluster (>1 member sequence) into children/adult age categories
     print ('...parsing cd-hit clstr file...')
     isolateid_to_representatives, isolateid_to_agecategory = {}, {} # isolates_to_ignore include those of ambiguous age categories + 0 pat dist sequences with > minimal number of n/-
     fhandle = filter(None, open(params.nr, 'rU').readlines())
@@ -164,7 +172,7 @@ if __name__ == '__main__':
             if len(cluster) > 1:
                 cluster = [re.search('(GBISL|EPIISL|GB_ISL_|EPI_ISL_)\d+', header).group().replace('_', '') for header in cluster]
                 cluster_age = [isolateid_to_age[isolateid] for isolateid in cluster]
-                # all children or adults
+                # all children or adults sequence clusters
                 if all([params.child[0] <= age <= params.child[-1] for age in cluster_age]):
                     isolateid_to_agecategory[isolateid] = 'C'
                     for isolateid in cluster:
@@ -173,7 +181,7 @@ if __name__ == '__main__':
                     isolateid_to_agecategory[isolateid] = 'A'
                     for isolateid in cluster:
                         isolateid_to_representatives[isolateid] = cluster
-                # uncategorized age present
+                # uncategorized age present in sequence cluster
                 elif all([params.child[0] <= age <= params.adult[-1] for age in cluster_age]) and any([params.child[-1] < age < params.adult[0] for age in cluster_age]):
                     isolateid_to_agecategory[isolateid] = 'U'
                     for isolateid in cluster:
