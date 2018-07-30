@@ -98,7 +98,7 @@ if __name__ == '__main__':
     from os.path import expanduser
     import re, sys, itertools
     ref_subtype_dictionary = {'H1N1PDM09':'H1', 'H3N2':'H3', 'BVIC':'B73', 'BYAM':'B73'}
-    HA_ref_numbering_fdat = parsefasta('H1pdm09_H3_FluB_NumberingRef.fa', check_dna=0, check_codon=0)
+    HA_ref_numbering_fdat = parsefasta(expanduser('~/Dropbox/age_final_submission/ageflu/files/H1pdm09_H3_FluB_NumberingRef.fa'), check_dna=0, check_codon=0)
     queryST_to_refST_to_AbNum_to_RefNum = {'H1N1PDM09': {'H1':{}, 'H3':{}, 'B73':{}}, 'H3N2': {'H1':{}, 'H3':{}, 'B73':{}}, 'BVIC': {'H1':{}, 'H3':{}, 'B73':{}}, 'BYAM': {'H1':{}, 'H3':{}, 'B73':{}}}
     queryST_to_RefStrain = {'H1N1PDM09':'A/Texas/04/2009(H1N1)_H1pdm09absolutenumbering', 'H3N2':'A/Aichi/2/1968(H3N2)_H3absolutenumbering', 'BVIC':'B/Brisbane/60/2008_BVicAbs', 'BYAM':'B/Phuket/3073/2013_BYamAbs'}
     RefStrain_to_RefSeq = {'H1':HA_ref_numbering_fdat['A/Texas/04/2009(H1N1)_H1pdm09absolutenumbering'], 'H3':HA_ref_numbering_fdat['A/Aichi/2/68(H3N2)_H3numbering'], 'B73':HA_ref_numbering_fdat['B/HK/8/73_BYamNumbering']}
@@ -154,11 +154,6 @@ if __name__ == '__main__':
     fdatheader_to_isolateid = {v:k for k,v in isolateid_to_fdatheader.items()}
     isolateid_to_age = {isolateid:int(re.search('AGE(\d+)', header).group(1)) for isolateid, header in isolateid_to_fdatheader.items()}
 
-    with open('dates.txt', 'w') as output:
-        for isolateid, header in isolateid_to_fdatheader.items():
-            date = re.search('_(\d+\.\d+)_', header).group(1)
-            output.write('{},{}\n'.format(isolateid, date))
-    exit(1)
     # sequences to ignore (outside of child_min and adult_max age)
     isolates_to_ignore = [isolateid for isolateid, age in isolateid_to_age.items() if age < params.child[0] or age > params.adult[-1]]
 
@@ -202,7 +197,7 @@ if __name__ == '__main__':
     isolateid_to_leaf = {v:k for k,v in leaf_to_isolateid.items()}
 
     import random
-    from decimal import *
+    #from decimal import *
     print ('...finding closest pairs...')
     anc_to_desc = {}
     desc_to_anc = {}
@@ -214,7 +209,8 @@ if __name__ == '__main__':
             continue
 
         # get children leaf nodes and their distances to current node
-        childleaf_to_distance = {child:Decimal(child.get_distance(node)).quantize(Decimal('1e-4')) for child in node.children if child.is_leaf()}
+        #childleaf_to_distance = {child:Decimal(child.get_distance(node)).quantize(Decimal('1e-4')) for child in node.children if child.is_leaf()}
+        childleaf_to_distance = {child:round(child.get_distance(node), 4) for child in node.children if child.is_leaf()}
 
         if len(childleaf_to_distance) > 0:
             # closest child leaf from node - decide closest child leaf using patristic distances without truncating at 1e-5
@@ -234,7 +230,8 @@ if __name__ == '__main__':
                 for childnode in descendant_internal_nodes:
                     grandchildren_leaves = [grandchild for grandchild in childnode.children if grandchild.is_leaf()]
                     if len(grandchildren_leaves) > 0:
-                        grandchildleaf_to_distance = {grandchild:Decimal(grandchild.get_distance(childnode)).quantize(Decimal('1e-4')) for grandchild in grandchildren_leaves}
+                        #grandchildleaf_to_distance = {grandchild:Decimal(grandchild.get_distance(childnode)).quantize(Decimal('1e-4')) for grandchild in grandchildren_leaves}
+                        grandchildleaf_to_distance = {grandchild:round(grandchild.get_distance(childnode), 4) for grandchild in grandchildren_leaves}
                         nearest_grandchild_with_zero_distance = [grandchild for grandchild in grandchildren_leaves if grandchildleaf_to_distance[grandchild] == 0]
                         # remove sequences in cases where distance = 0 and aren't the least number of unknown residues
                         # we do this because we don't want to re-count possible identical strains
@@ -243,7 +240,8 @@ if __name__ == '__main__':
                             for grandchild in list(set(nearest_grandchild_with_zero_distance)-set(nearest_grandchild_with_zero_distance_to_keep)):
                                 grandchildren_leaves.remove(grandchild)
                         # update grandchild distance to node
-                        childleaf_to_distance.update({grandchild:Decimal(grandchild.get_distance(node)).quantize(Decimal('1e-4')) for grandchild in grandchildren_leaves})
+                        #childleaf_to_distance.update({grandchild:Decimal(grandchild.get_distance(node)).quantize(Decimal('1e-4')) for grandchild in grandchildren_leaves})
+                        childleaf_to_distance.update({grandchild:round(grandchild.get_distance(node), 4) for grandchild in grandchildren_leaves})
 
             # if there are no children/grandchildren left for pairing
             if len(childleaf_to_distance) == 0:

@@ -1,0 +1,39 @@
+Frequency distribution of pair types stratified by number of amino acid substitutions
+PT/Sub_#	CA	AC	CC	AA	NC	Sub#_TOT
+0	45	23	14	187	1550	1819
+1	51	30	19	173	1186	1459
+2	8	12	15	60	311	406
+3	5	5	0	21	76	107
+4	0	2	0	0	9	11
+5	0	0	0	1	4	5
+PT_TOT	109	72	48	442	3136	
+
+Distribution of pair types stratified by number of amino acid substitutions
+PT/Sub_#	CA	AC	CC	AA	NC
+0	0.412844036697	0.319444444444	0.291666666667	0.423076923077	0.494260204082
+1	0.467889908257	0.416666666667	0.395833333333	0.391402714932	0.37818877551
+2	0.0733944954128	0.166666666667	0.3125	0.135746606335	0.0991709183673
+3	0.045871559633	0.0694444444444	0.0	0.0475113122172	0.0242346938776
+4	0.0	0.0277777777778	0.0	0.0	0.00286989795918
+5	0.0	0.0	0.0	0.00226244343891	0.00127551020408
+
+Association analyses between pair-type (end-in-adult v. end-in-child) and propensity for substitution(s) - whole HA
+PT/SF	Substitution	No Substitution
+End-in-Adult	319	232
+End-in-Child	83	37
+OR	0.612951807229	p-value	0.02282039
+Wald_95CI	0.429870150342,0.874007924688
+Wald_90CI	0.401634376135,0.935452591487
+A&M_90CI	0.4301378,0.8734641
+A&M_95CI	0.4022762,0.93396
+
+Association analyses between pair-type (end-in-adult v. end-in-child) and propensity for substitution(s) - RBS/AS
+PT/SF	Substitution	No Substitution
+End-in-Adult	79	472
+End-in-Child	32	88
+OR	0.460275423729	p-value	0.002768426
+Wald_95CI	0.310363334241,0.68259823992
+Wald_90CI	0.287804451388,0.736102116098
+A&M_90CI	0.310649,0.6819705
+A&M_95CI	0.2882134,0.7350576
+

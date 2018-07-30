@@ -80,22 +80,22 @@ def calculateOR(n11, n10, n01, n00):
 
     if n11 + n10 + n01 + n00 >= 1000:
         # G-test
-        cmd = ['Rscript', "ageflu_gtest.R"] + map(str,[n11, n10, n01, n00])
+        cmd = ['Rscript', expanduser("~/Dropbox/age_final_submission/ageflu/scripts/ageflu_gtest.R")] + map(str,[n11, n10, n01, n00])
         Routput = subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.PIPE).split('\n')
         pval = float(Routput[1])
         # small sample size CI - NaN
         ss_CI90L, ss_CI90R, ss_CI95L, ss_CI95R = 'NaN', 'NaN', 'NaN', 'NaN'
     else:
         # Barnard's
-        cmd = ['Rscript', "ageflu_barnard.R"] + map(str,[n11, n10, n01, n00])
+        cmd = ['Rscript', expanduser("~/Dropbox/age_final_submission/ageflu/scripts/ageflu_barnard.R")] + map(str,[n11, n10, n01, n00])
         Routput = subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.PIPE).split('\n')
         pval = float(Routput[-2].replace('[1]','').split()[1])
         # Agresti & Min unconditional exact CI for small sample sizes
-        cmd = ['Rscript', "agresti_and_min.R"] + map(str,[n11, n10, n01, n00, 0.9])
+        cmd = ['Rscript', expanduser("~/Dropbox/age_final_submission/ageflu/scripts/agresti_and_min.R")] + map(str,[n11, n10, n01, n00, 0.9])
         Routput = filter(None, subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.PIPE).split('\n'))
         ss_CI90L, ss_CI90R = map(lambda _: _ if _ == 'Inf' else float(_), re.findall('(\d+\.\d+|\d+|Inf)', Routput[-1]))
 
-        cmd = ['Rscript', "agresti_and_min.R"] + map(str,[n11, n10, n01, n00, 0.95])
+        cmd = ['Rscript', expanduser("~/Dropbox/age_final_submission/ageflu/scripts/agresti_and_min.R")] + map(str,[n11, n10, n01, n00, 0.95])
         Routput = filter(None, subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.PIPE).split('\n'))
         ss_CI95L, ss_CI95R = map(lambda _: _ if _ == 'Inf' else float(_), re.findall('(\d+\.\d+|\d+|Inf)', Routput[-1]))
 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     import sys, itertools
     from os.path import expanduser
     ref_subtype_dictionary = {'H1N1PDM09':'H1', 'H3N2':'H3', 'BVIC':'B73', 'BYAM':'B73'}
-    HA_ref_numbering_fdat = parsefasta('H1pdm09_H3_FluB_NumberingRef.fa', check_dna=0, check_codon=0)
+    HA_ref_numbering_fdat = parsefasta(expanduser('~/Dropbox/age_final_submission/ageflu/files/H1pdm09_H3_FluB_NumberingRef.fa'), check_dna=0, check_codon=0)
     queryST_to_refST_to_AbNum_to_RefNum = {'H1N1PDM09': {'H1':{}, 'H3':{}, 'B73':{}}, 'H3N2': {'H1':{}, 'H3':{}, 'B73':{}}, 'BVIC': {'H1':{}, 'H3':{}, 'B73':{}}, 'BYAM': {'H1':{}, 'H3':{}, 'B73':{}}}
     queryST_to_RefStrain = {'H1N1PDM09':'A/Texas/04/2009(H1N1)_H1pdm09absolutenumbering', 'H3N2':'A/Aichi/2/1968(H3N2)_H3absolutenumbering', 'BVIC':'B/Brisbane/60/2008_BVicAbs', 'BYAM':'B/Phuket/3073/2013_BYamAbs'}
     RefStrain_to_RefSeq = {'H1':HA_ref_numbering_fdat['A/Texas/04/2009(H1N1)_H1pdm09absolutenumbering'], 'H3':HA_ref_numbering_fdat['A/Aichi/2/68(H3N2)_H3numbering'], 'B73':HA_ref_numbering_fdat['B/HK/8/73_BYamNumbering']}
@@ -300,27 +300,46 @@ if __name__ == '__main__':
                 CA_count = pt_to_AAsublen['CA'][sub_len]
             except:
                 CA_count = 0
-                pt_to_AAsublen['CA'][sub_len] = 0
+                try:
+                    pt_to_AAsublen['CA'][sub_len] = 0
+                except:
+                    pt_to_AAsublen['CA']={sub_len:0}
+
             try:
                 AC_count = pt_to_AAsublen['AC'][sub_len]
             except:
                 AC_count = 0
-                pt_to_AAsublen['AC'][sub_len] = 0
+                try:
+                    pt_to_AAsublen['AC'][sub_len] = 0
+                except:
+                    pt_to_AAsublen['AC'] = {sub_len: 0}
+
             try:
                 CC_count = pt_to_AAsublen['CC'][sub_len]
             except:
                 CC_count = 0
-                pt_to_AAsublen['CC'][sub_len] = 0
+                try:
+                    pt_to_AAsublen['CC'][sub_len] = 0
+                except:
+                    pt_to_AAsublen['CC'] = {sub_len: 0}
+
             try:
                 AA_count = pt_to_AAsublen['AA'][sub_len]
             except:
                 AA_count = 0
-                pt_to_AAsublen['AA'][sub_len] = 0
+                try:
+                    pt_to_AAsublen['AA'][sub_len] = 0
+                except:
+                    pt_to_AAsublen['AA'] = {sub_len: 0}
+
             try:
                 NC_count = pt_to_AAsublen['NC'][sub_len]
             except:
                 NC_count = 0
-                pt_to_AAsublen['NC'][sub_len] = 0
+                try:
+                    pt_to_AAsublen['NC'][sub_len] = 0
+                except:
+                    pt_to_AAsublen['NC'] = {sub_len: 0}
 
             row_counts = [CA_count, AC_count, CC_count, AA_count, NC_count]
             sublen_to_row_counts[sub_len] = row_counts
@@ -333,38 +352,58 @@ if __name__ == '__main__':
         # pairs distribution - proportions
         output.write('Distribution of pair types stratified by number of amino acid substitutions\nPT/Sub_#\tCA\tAC\tCC\tAA\tNC\n')
         for sub_len in xrange(maxmut+1):
-            output.write('{}\t{}\n'.format(sub_len, '\t'.join(map(lambda _: '{}'.format(_), [sublen_to_row_counts[sub_len][k]/col_tot for k, col_tot in enumerate(col_counts)]))))
+            div_list = [ ]
+            for k, col_tot in enumerate(col_counts):
+                try:
+                    div_list.append(sublen_to_row_counts[sub_len][k]/col_tot)
+                except:
+                    div_list.append('NaN')
+
+            output.write('{}\t{}\n'.format(sub_len, '\t'.join(map(lambda _: '{}'.format(_), div_list))))
         output.write('\n')
 
-        # Wilcoxon signed-rank tests between pair types
-        output.write('Wilcoxon signed-rank test between pair types\nPT_I\tPT_J\tp-value\n')
-        for pt_i, pt_j in itertools.combinations(pt_to_AAsublen.keys(), 2):
-            try:
-                pt_i_counts = [1000*(pt_to_AAsublen[pt_i][sub_len]/pt_count[pt_i]) for sub_len in xrange(maxmut+1)]
-            except:
-                pt_count[pt_i] = 0
-                pt_i_counts = [0]*(maxmut+1)
-
-            try:
-                pt_j_counts = [1000*(pt_to_AAsublen[pt_j][sub_len]/pt_count[pt_j]) for sub_len in xrange(maxmut+1)]
-            except:
-                pt_count[pt_j] = 0
-                pt_j_counts = [0]*(maxmut+1)
-            output.write('{}\t{}\t{}\n'.format(pt_i, pt_j, stats.wilcoxon(pt_i_counts, pt_j_counts).pvalue))
-
-        # end-in-adult v. end-in-child
-        pt_i_counts = [1000*(pt_to_AAsublen['AA'][sub_len] + pt_to_AAsublen['CA'][sub_len])/(pt_count['AA'] + pt_count['CA']) for sub_len in xrange(maxmut+1)]
-        pt_j_counts = [1000*(pt_to_AAsublen['CC'][sub_len] + pt_to_AAsublen['AC'][sub_len])/(pt_count['CC'] + pt_count['AC']) for sub_len in xrange(maxmut+1)]
-        output.write('end-in-adult\tend-in-child\t{}\n\n'.format(stats.wilcoxon(pt_i_counts, pt_j_counts).pvalue))
-
         # Association analyses between pair types (end-in-adult v. end-in-child) and propensity for substitution(s) - whole HA
-        n1t = pt_count['CA'] + pt_count['AA']
-        n0t = pt_count['CC'] + pt_count['AC']
+        try:
+            n1t = pt_count['CA']
+        except:
+            n1t = 0
 
-        n11 = sum([pt_to_AAsublen['CA'][_] for _ in pt_to_AAsublen['CA'] if _ > 0]) + sum([pt_to_AAsublen['AA'][_] for _ in pt_to_AAsublen['AA'] if _ > 0])
-        n01 = sum([pt_to_AAsublen['CC'][_] for _ in pt_to_AAsublen['CC'] if _ > 0]) + sum([pt_to_AAsublen['AC'][_] for _ in pt_to_AAsublen['AC'] if _ > 0])
+        try:
+            n1t += pt_count['AA']
+        except:
+            pass
 
-        output.write('Association analyses between pair-type (end-in-adult v. end-in-child) and propensity for substitution(s) - whole HA\nPT/SF\tSubstitution\tNo Substitution\nEnd-in-adult\t{}\t{}\nEnd-in-child\t{}\t{}\n'.format(n11, n1t-n11, n01, n0t-n01))
+        try:
+            n0t = pt_count['CC']
+        except:
+            n0t = 0
+
+        try:
+            n0t += pt_count['AC']
+        except:
+            pass
+
+        try:
+            n11 = sum([pt_to_AAsublen['CA'][_] for _ in pt_to_AAsublen['CA'] if _ > 0])
+        except:
+            n11 = 0
+
+        try:
+            n11 += sum([pt_to_AAsublen['AA'][_] for _ in pt_to_AAsublen['AA'] if _ > 0])
+        except:
+            pass
+
+        try:
+            n01 = sum([pt_to_AAsublen['CC'][_] for _ in pt_to_AAsublen['CC'] if _ > 0])
+        except:
+            n01 = 0
+
+        try:
+            n01 += sum([pt_to_AAsublen['AC'][_] for _ in pt_to_AAsublen['AC'] if _ > 0])
+        except:
+            pass
+
+        output.write('Association analyses between pair-type (end-in-adult v. end-in-child) and propensity for substitution(s) - whole HA\nPT/SF\tSubstitution\tNo Substitution\nEnd-in-Adult\t{}\t{}\nEnd-in-Child\t{}\t{}\n'.format(n11, n1t-n11, n01, n0t-n01))
         OR_uMLE, wald_MLE_CI90L, wald_MLE_CI90R, wald_MLE_CI95L, wald_MLE_CI95R, pval, ss_CI90L, ss_CI90R, ss_CI95L, ss_CI95R = calculateOR(n11, n1t-n11, n01, n0t-n01)
         output.write('OR\t{}\tp-value\t{}\nWald_95CI\t{}\nWald_90CI\t{}\nA&M_90CI\t{}\nA&M_95CI\t{}\n\n'.format(OR_uMLE, pval, ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI90L, wald_MLE_CI90R])), ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI95L, wald_MLE_CI95R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI90L, ss_CI90R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI95L, ss_CI95R]))))
 
@@ -390,10 +429,11 @@ if __name__ == '__main__':
         except:
             pass
 
-        output.write('Association analyses between pair-type (end-in-adult v. end-in-child) and propensity for substitution(s) - RBS/AS\nPT/SF\tSubstitution\tNo Substitution\nEnd-in-adult\t{}\t{}\nEnd-in-child\t{}\t{}\n'.format(n11, n1t-n11, n01, n0t-n01))
+        output.write('Association analyses between pair-type (end-in-adult v. end-in-child) and propensity for substitution(s) - RBS/AS\nPT/SF\tSubstitution\tNo Substitution\nEnd-in-Adult\t{}\t{}\nEnd-in-Child\t{}\t{}\n'.format(n11, n1t-n11, n01, n0t-n01))
         OR_uMLE, wald_MLE_CI90L, wald_MLE_CI90R, wald_MLE_CI95L, wald_MLE_CI95R, pval, ss_CI90L, ss_CI90R, ss_CI95L, ss_CI95R = calculateOR(n11, n1t-n11, n01, n0t-n01)
         output.write('OR\t{}\tp-value\t{}\nWald_95CI\t{}\nWald_90CI\t{}\nA&M_90CI\t{}\nA&M_95CI\t{}\n\n'.format(OR_uMLE, pval, ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI90L, wald_MLE_CI90R])), ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI95L, wald_MLE_CI95R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI90L, ss_CI90R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI95L, ss_CI95R]))))
 
+        """
         # Association analyses between pair types (CA v. AC) and propensity for substitution(s) - whole HA
         n1t = pt_count['CA']
         n0t = pt_count['AC']
@@ -419,7 +459,7 @@ if __name__ == '__main__':
 
         output.write('Association analyses between pair-type (CA v. AC) and propensity for substitution(s) - RBS/AS\nPT/SF\tSubstitution\tNo Substitution\nCA\t{}\t{}\nAC\t{}\t{}\n'.format(n11, n1t-n11, n01, n0t-n01))
         OR_uMLE, wald_MLE_CI90L, wald_MLE_CI90R, wald_MLE_CI95L, wald_MLE_CI95R, pval, ss_CI90L, ss_CI90R, ss_CI95L, ss_CI95R = calculateOR(n11, n1t-n11, n01, n0t-n01)
-        output.write('OR\t{}\tp-value\t{}\nWald_95CI\t{}\nWald_90CI\t{}\nA&M_90CI\t{}\nA&M_95CI\t{}\n\n'.format(OR_uMLE, pval, ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI90L, wald_MLE_CI90R])), ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI95L, wald_MLE_CI95R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI90L, ss_CI90R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI95L, ss_CI95R]))))
+        output.write('OR\t{}\tp-value\t{}\nWald_95CI\t{}\nWald_90CI\t{}\nA&M_90CI\t{}\nA&M_95CI\t{}\n\n'.format(OR_uMLE, pval, ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI90L, wald_MLE_CI90R])), ','.join(map(lambda _: '{}'.format(_), [wald_MLE_CI95L, wald_MLE_CI95R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI90L, ss_CI90R])), ','.join(map(lambda _: '{}'.format(_), [ss_CI95L, ss_CI95R]))))"""
 
     # Age-associated sites
     print ('...calculating age-associated sites...')
@@ -428,10 +468,10 @@ if __name__ == '__main__':
         # end-in-adult v. end-in-child
         try:
             n11 = abspos_to_pt_to_count[abs_pos]['CA']
-            CA_11 = abspos_to_pt_to_count[abs_pos]['CA']
+            #CA_11 = abspos_to_pt_to_count[abs_pos]['CA']
         except:
             n11 = 0
-            CA_11 = 0
+            #CA_11 = 0
 
         try:
             n11 += abspos_to_pt_to_count[abs_pos]['AA']
@@ -445,31 +485,32 @@ if __name__ == '__main__':
 
         try:
             n01 += abspos_to_pt_to_count[abs_pos]['AC']
-            AC_11 = abspos_to_pt_to_count[abs_pos]['AC']
+            #AC_11 = abspos_to_pt_to_count[abs_pos]['AC']
         except:
-            AC_11 = 0
+            #AC_11 = 0
+            pass
 
         n10 = pt_count['CA'] + pt_count['AA'] - n11
         n00 = pt_count['CC'] + pt_count['AC'] - n01
 
-        abspos_to_OR_results[abs_pos] = {'all': calculateOR(n11, n10, n01, n00), 'caac': calculateOR(CA_11, pt_count['CA']-CA_11, AC_11, pt_count['AC']-AC_11)}
+        abspos_to_OR_results[abs_pos] = {'all': calculateOR(n11, n10, n01, n00)}#, 'caac': calculateOR(CA_11, pt_count['CA']-CA_11, AC_11, pt_count['AC']-AC_11)}
 
     # get q values
     all_OR_pvals = [abspos_to_OR_results[abs_pos]['all'][5] for abs_pos in abspos_to_OR_results.keys()]
     all_OR_qvals = sm.stats.multipletests(all_OR_pvals, method='fdr_bh')[1].tolist()
     all_pval_to_qval = {all_OR_pvals[_]:qvalue for _, qvalue in enumerate(all_OR_qvals)}
 
+    """
     caac_OR_pvals = [abspos_to_OR_results[abs_pos]['caac'][5] for abs_pos in abspos_to_OR_results.keys()]
     caac_OR_qvals = sm.stats.multipletests(caac_OR_pvals, method='fdr_bh')[1].tolist()
     caac_pval_to_qval = {caac_OR_pvals[_]:qvalue for _, qvalue in enumerate(caac_OR_qvals)}
+    """
 
     with open('ageflu_age-associated-sites.{}'.format(outfname), 'w') as output:
         output.write('abs_pos\tref(H3)\tref(H1)\tref(B73)\tRBS\tAS\tGS\tPS\t'
-                     'OR_uMLE_(EIA v. EIC)\twald_MLE_CI90L\twald_MLE_CI90R\twald_MLE_CI95L\twald_MLE_CI95R\t'
-                     'p-value_(EIA v. EIC)\tss_CI90L\tss_CI90R\tss_CI95L\tss_CI95R\tq-value_(EIA v. EIC)\t'
-                     'OR_uMLE_(CA v. AC)\twald_MLE_CI90L\twald_MLE_CI90R\twald_MLE_CI95L\twald_MLE_CI95R\t'
-                     'p-value_(CA v. AC)\tss_CI90L\tss_CI90R\tss_CI95L\tss_CI95R\tq-value_(CA v. AC)\t'
-                     'Mutations({})\tCA\tAC\tAA\tCC\tend-in-adult\tend-in-child\tTotal\n'.format(ref_subtype_dictionary[query_subtype]))
+                     'OR_uMLE\twald_MLE_CI90L\twald_MLE_CI90R\twald_MLE_CI95L\twald_MLE_CI95R\t'
+                     'p-value\tss_CI90L\tss_CI90R\tss_CI95L\tss_CI95R\tq-value\t'
+                     'Mutations({})\tAC\tCA\tAA\tCC\tEnd-in-Adult\tEnd-in-Child\tTotal\n'.format(ref_subtype_dictionary[query_subtype]))
         for abs_pos in abspos_to_OR_results.keys():
             # reference positions
             try:
@@ -506,7 +547,7 @@ if __name__ == '__main__':
 
             # OR results
             all_OR_result = map(str, ['{:4f}'.format(_) if isinstance(_, float) else _ for _ in abspos_to_OR_results[abs_pos]['all']])
-            caac_OR_result = map(str, ['{:4f}'.format(_) if isinstance(_, float) else _ for _ in abspos_to_OR_results[abs_pos]['caac']])
+            #caac_OR_result = map(str, ['{:4f}'.format(_) if isinstance(_, float) else _ for _ in abspos_to_OR_results[abs_pos]['caac']])
 
             # substitutions
             substitution_line = ['{}({})'.format(re.sub(str(abs_pos), str(main_ref_pos), substitution), ','.join(['{}:{}'.format(pt, count) for pt, count in abspos_to_mutation_to_pt_to_count[abs_pos][substitution].items()])) for substitution in abspos_to_mutation_to_pt_to_count[abs_pos].keys()]
@@ -515,14 +556,14 @@ if __name__ == '__main__':
             count_line = []
             end_in_adult_count, end_in_child_count = 0, 0
             try:
-                count_line.append(abspos_to_pt_to_count[abs_pos]['CA'])
-                end_in_adult_count += abspos_to_pt_to_count[abs_pos]['CA']
+                count_line.append(abspos_to_pt_to_count[abs_pos]['AC'])
+                end_in_adult_count += abspos_to_pt_to_count[abs_pos]['AC']
             except:
                 count_line.append(0)
 
             try:
-                count_line.append(abspos_to_pt_to_count[abs_pos]['AC'])
-                end_in_child_count += abspos_to_pt_to_count[abs_pos]['AC']
+                count_line.append(abspos_to_pt_to_count[abs_pos]['CA'])
+                end_in_child_count += abspos_to_pt_to_count[abs_pos]['CA']
             except:
                 count_line.append(0)
 
@@ -540,7 +581,7 @@ if __name__ == '__main__':
 
             count_line = count_line + [end_in_adult_count, end_in_child_count, end_in_adult_count+end_in_child_count]
 
-            write_line = map(str, [abs_pos, H3_ref_pos, H1_ref_pos, B_ref_pos, RBS_binary, AS_type, GS_binary, PS_binary, '\t'.join(all_OR_result), all_pval_to_qval[abspos_to_OR_results[abs_pos]['all'][5]], '\t'.join(caac_OR_result), caac_pval_to_qval[abspos_to_OR_results[abs_pos]['caac'][5]], ';'.join(substitution_line), '\t'.join(map(str, count_line))])
+            write_line = map(str, [abs_pos, H3_ref_pos, H1_ref_pos, B_ref_pos, RBS_binary, AS_type, GS_binary, PS_binary, '\t'.join(all_OR_result), all_pval_to_qval[abspos_to_OR_results[abs_pos]['all'][5]], ';'.join(substitution_line), '\t'.join(map(str, count_line))])
 
             output.write('{}\n'.format('\t'.join(write_line)))
             output.flush()
