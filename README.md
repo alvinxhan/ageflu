@@ -30,9 +30,9 @@ From [ageflu_analysis.py](https://github.com/alvinxhan/ageflu/blob/master/script
 You will find custom Python 2 and R scripts used in our analyses here: 
 * ageflu_getpairs.py - python script to parse for evolutionarily closest pairs. 
 * ageflu_analysis.py - python script to perform association analyses on evolutionarily closest pairs parsed by ageflu_getpairs.py. 
-* physicochemical_properties_association_v2.py and foldx_stability_master_v2.py - these two python scripts (the former being a wrapper) were used alongside FoldX to determine if amino acid substitutions were significantly more probable to be resulted from end-in-adult or end-in-child pairs. If you are interested in how to use these scripts, do drop me an email at hanxc@bii.a-star.edu.sg. 
+* physicochemical_properties_association_v2.py and foldx_stability_master_v2.py - these two python scripts (the former being a wrapper) were used alongside FoldX to determine if amino acid substitutions with physicochemical property changes were significantly more probable to be resulted from end-in-adult or end-in-child pairs. If you are interested in how to use these scripts, do drop me an email at hanxc@bii.a-star.edu.sg. 
   
 
-* bayesian_binomial_MCMC.R - This simple Bayesian MCMC was used to analyse the CD-HIT clstr files to determine if sequences identical at the nucleotide level were equally likely to be found in both adults and children.
+* bayesian_binomial_MCMC.R - A simple Bayesian MCMC used to analyse the CD-HIT clstr files to determine if sequences identical at the nucleotide level were equally likely to be found in both adults and children.
 * ageflu_gtest.R, ageflu_barnard.R, agresti_and_min.R - These R scripts are the actual hypothesis tests/statistical analysis used in our association analyses. They are embedded within ageflu_analysis.py.
 
