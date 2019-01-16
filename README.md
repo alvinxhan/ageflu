@@ -15,7 +15,7 @@ You will find the data and result files for all seasonal influenza subtypes/line
 _Data files_
 * {subtype}-HA-nuc_rooted.nwk - Rooted phylogenetic tree inferred using our nested phylogenetic inference approach. 
 * {subtype}-HA-nuc_cd-hit-non-redundant.clstr - Output file of CD-HIT clustering viruses with identical HA nucleotide sequences. 
-* {subtype}-HA-nuc.fa - Curated FASTA HA nucleotide sequences. - We are unable to provide the sequence alignment as GISAID disallows releasing genetic sequences to external public domains. However, we have provided the isolate identifiers/accession numbers as well as headers to the sequences we have used in Sequence_headers_ALLSUBTYPES.csv and Acknowledge_Table_GISAID.csv.  
+* {subtype}-HA-nuc.fa - Curated FASTA HA nucleotide sequences. - **We are unable to provide the sequence alignment as GISAID disallows releasing genetic sequences to other external public domains. However, we have provided the isolate identifiers/accession numbers as well as headers to the sequences we have used in Sequence_headers_ALLSUBTYPES.csv and Acknowledge_Table_GISAID.csv.**  
 
 _Result files_
 
